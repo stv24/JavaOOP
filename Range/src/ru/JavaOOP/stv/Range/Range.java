@@ -5,12 +5,8 @@ public class Range {
     private double to;
 
     public Range(double from, double to) {
-        if (from > to) {
-            System.out.println("Перепутаны границы диапазона");
-        } else {
-            this.from = from;
-            this.to = to;
-        }
+        this.from = from;
+        this.to = to;
     }
 
     public double getLength() {
