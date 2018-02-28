@@ -15,7 +15,7 @@ public class Range {
 
     public Range getIntersection(Range range2) {
 
-        if (range2.to < this.from || range2.from > this.to) {
+        if (range2.to <= this.from || range2.from >= this.to) {
             return null;
         } else if (range2.from >= this.from && range2.to <= this.to) {
             return new Range(range2.from, range2.to);
@@ -33,15 +33,15 @@ public class Range {
         if ((range2.to < this.from) || (range2.from > this.to)) {
             return new Range[]{new Range(this.from, this.to), new Range(range2.from, range2.to)};
         } else {
-            double from = this.from <= range2.from ? this.from : range2.from;
-            double to = this.to <= range2.to ? range2.to : this.to;
+            double from = Math.min(this.from, range2.from);
+            double to = Math.max(this.to, range2.to);
             return new Range[]{new Range(from, to)};
         }
     }
 
     public Range[] getDifference(Range range2) {
 
-        if (range2.to < this.from || range2.from > this.to) {
+        if (range2.to <= this.from || range2.from >= this.to) {
             return new Range[]{new Range(this.from, this.to)};
         } else if (this.from >= range2.from && this.to <= range2.to) {
             return new Range[0];
@@ -49,8 +49,6 @@ public class Range {
             return new Range[]{new Range(this.from, range2.from)};
         } else if (range2.from >= this.from && range2.to <= this.to) {
             return new Range[]{new Range(this.from, range2.from), new Range(range2.to, this.to)};
-        } else if (range2.from < this.from && range2.to <= this.to) {
-            return new Range[]{new Range(range2.to, this.to)};
         } else {
             return new Range[]{new Range(this.from, range2.to)};
         }
@@ -75,5 +73,6 @@ public class Range {
     public double getFrom() {
         return from;
     }
+
 
 }
