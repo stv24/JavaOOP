@@ -48,8 +48,8 @@ public class Main {
         boolean e1 = vec.equals(vec2);
         boolean e2 = vec3.equals(sum);
 
-        if (test1 == true && test2 == true && test3 == true && test4 == true && test5 == true && test6 == true
-                && test7 == true && test8 == true && test9 == true) {
+        if (test1 && test2 && test3 && test4 && test5 && test6
+                && test7 && test8 && test9) {
             System.out.println("Все тесты прошли успешно!");
         } else {
             System.out.println("Где-то есть ошибка");
