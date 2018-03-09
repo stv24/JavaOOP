@@ -29,6 +29,8 @@ public class Main {
         vec5.setElementAt(3, vec3.getElementAt(1));
 
         boolean test6 = vec5.equals(new Vector(new double[]{5, 9.9, 7.4, 0.0, -1, -8.9}));
+        double length = vec5.getLength();
+        boolean test4 = Math.abs(length  - 16.061756) <= 1e-5;
 
         Vector statVec1 = Vector.addition(vec, vec3);
         vec.invert();
@@ -37,7 +39,7 @@ public class Main {
 
         boolean test7 = statVec1.equals(new Vector(new double[]{1.0, 3.5, -0.20000000000000018, 4.1, 0}));
         boolean test8 = statVec2.equals(new Vector(new double[]{-2, -7, -7.6, -8.2, -0.0}));
-        boolean test9 = statVecSum + 58.6 <= 1e-5;
+        boolean test9 = Math.abs(statVecSum + 58.6) <= 1e-5;
 
         int hash1 = vec.hashCode();
         int hash2 = vec2.hashCode();
