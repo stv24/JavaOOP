@@ -30,7 +30,7 @@ public class Main {
 
         boolean test6 = vec5.equals(new Vector(new double[]{5, 9.9, 7.4, 0.0, -1, -8.9}));
         double length = vec5.getLength();
-        boolean test4 = Math.abs(length  - 16.061756) <= 1e-5;
+        boolean test4 = Math.abs(length - 16.061756) <= 1e-5;
 
         Vector statVec1 = Vector.addition(vec, vec3);
         vec.invert();
