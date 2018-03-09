@@ -51,37 +51,39 @@ public class Vector {
 
     public void add(Vector vector) {
         int n = Math.max(this.vector.length, vector.getSize());
-        if (this.getSize() <= vector.getSize()) {
-            if (this.getSize() < vector.getSize()) {
-                this.vector = Arrays.copyOf(this.vector, n);
-            }
-            for (int i = 0; i < n; ++i) {
-                this.vector[i] += vector.vector[i];
-            }
-        } else {
-            double[] newVector = Arrays.copyOf(vector.vector, n);
-            for (int i = 0; i < n; ++i) {
-                this.vector[i] = newVector[i] + this.vector[i];
-            }
+        Vector tempVector = new Vector(n);
+        if (this.getSize() < vector.getSize()) {
+            this.vector = Arrays.copyOf(this.vector, n);
+            tempVector.vector = Arrays.copyOf(vector.vector, n);
+        }
+
+        if (this.getSize() > vector.getSize()) {
+            tempVector.vector = Arrays.copyOf(vector.vector, n);
+        }
+
+        for (int i = 0; i < n; ++i) {
+            this.vector[i] += tempVector.vector[i];
         }
 
     }
 
     public void subtract(Vector vector) {
         int n = Math.max(this.getSize(), vector.getSize());
-        if (this.getSize() <= vector.getSize()) {
-            if (this.getSize() < vector.getSize()) {
-                this.vector = Arrays.copyOf(this.vector, n);
-            }
-            for (int i = 0; i < n; ++i) {
-                this.vector[i] -= vector.vector[i];
-            }
-        } else {
-            double[] vec2 = Arrays.copyOf(vector.vector, n);
-            for (int i = 0; i < n; ++i) {
-                this.vector[i] -= vec2[i];
-            }
+        Vector tempVector = new Vector(n);
+        if (this.getSize() < vector.getSize()) {
+            this.vector = Arrays.copyOf(this.vector, n);
+            tempVector.vector = Arrays.copyOf(vector.vector, n);
         }
+
+        if (this.getSize() > vector.getSize()) {
+            tempVector.vector = Arrays.copyOf(vector.vector, n);
+        }
+
+        for (int i = 0; i < n; ++i) {
+            this.vector[i] -= vector.vector[i];
+        }
+
+
     }
 
     public void multiply(double number) {
@@ -96,14 +98,14 @@ public class Vector {
 
     public void setElementAt(int index, double number) {
         if (index < 0 || index >= this.getSize()) {
-            throw new IllegalArgumentException("неверный индекс");
+            throw new IndexOutOfBoundsException("неверный индекс");
         }
         vector[index] = number;
     }
 
     public double getElementAt(int index) {
         if (index < 0 || index >= this.getSize()) {
-            throw new IllegalArgumentException("неверный индекс");
+            throw new IndexOutOfBoundsException("неверный индекс");
         }
         return vector[index];
     }
@@ -134,15 +136,13 @@ public class Vector {
     }
 
     public static Vector addition(Vector v1, Vector v2) {
-        Vector result = new Vector(v1.getSize());
-        result.vector = Arrays.copyOf(v1.vector, v1.getSize());
+        Vector result = new Vector(v1.getSize(), v1.vector);
         result.add(v2);
         return result;
     }
 
     public static Vector subtraction(Vector v1, Vector v2) {
-        Vector result = new Vector(v1.getSize());
-        result.vector = Arrays.copyOf(v1.vector, v1.getSize());
+        Vector result = new Vector(v1.getSize(), v1.vector);
         result.subtract(v2);
         return result;
     }
