@@ -50,36 +50,25 @@ public class Vector {
     }
 
     public void add(Vector vector) {
-        int n = Math.max(this.getSize(), vector.getSize());
 
-        for (int i = 0; i < n; ++i) {
+        if (vector.getSize() > this.getSize()) {
+            this.vector = Arrays.copyOf(this.vector, vector.getSize());
+        }
 
-            if (i == this.getSize()) {
-                this.vector = Arrays.copyOf(this.vector, n);
-            }
-            if (i == vector.getSize()) {
-                break;
-            }
-
+        for (int i = 0; i < vector.getSize(); ++i) {
             this.vector[i] += vector.vector[i];
         }
 
     }
 
     public void subtract(Vector vector) {
-        int n = Math.max(this.getSize(), vector.getSize());
-
-        for (int i = 0; i < n; ++i) {
-            if (i == this.getSize()) {
-                this.vector = Arrays.copyOf(this.vector, n);
-            }
-
-            if (i == vector.getSize()) {
-                break;
-            }
-            this.vector[i] -= vector.vector[i];
+        if (vector.getSize() > this.getSize()) {
+            this.vector = Arrays.copyOf(this.vector, vector.getSize());
         }
 
+        for (int i = 0; i < vector.getSize(); ++i) {
+            this.vector[i] -= vector.vector[i];
+        }
     }
 
     public void multiply(double number) {
