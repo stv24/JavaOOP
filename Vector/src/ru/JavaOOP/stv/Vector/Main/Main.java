@@ -22,6 +22,7 @@ public class Main {
         boolean test2 = vec.equals(new Vector(new double[]{1.0, 3.5, 7.8, 4.1, 0}));
         boolean test3 = vec3.equals(new Vector(new double[]{0, 0, 0, 0}));
 
+
         vec3.setElementAt(2, -8);
 
         boolean test5 = vec3.equals(new Vector(new double[]{0, 0, -8, 0}));
@@ -50,6 +51,7 @@ public class Main {
         boolean e1 = vec.equals(vec2);
         boolean e2 = vec3.equals(vec);
         boolean e3 = vec2.equals(testVec);
+
 
         if (test1 && test2 && test3 && test5 && test6
                 && test7 && test8 && test9) {

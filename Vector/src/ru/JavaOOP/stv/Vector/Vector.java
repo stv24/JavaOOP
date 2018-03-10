@@ -50,39 +50,35 @@ public class Vector {
     }
 
     public void add(Vector vector) {
-        int n = Math.max(this.vector.length, vector.getSize());
-        Vector tempVector = new Vector(n);
-        if (this.getSize() < vector.getSize()) {
-            this.vector = Arrays.copyOf(this.vector, n);
-            tempVector.vector = Arrays.copyOf(vector.vector, n);
-        }
-
-        if (this.getSize() > vector.getSize()) {
-            tempVector.vector = Arrays.copyOf(vector.vector, n);
-        }
+        int n = Math.max(this.getSize(), vector.getSize());
 
         for (int i = 0; i < n; ++i) {
-            this.vector[i] += tempVector.vector[i];
+
+            if (i == this.getSize()) {
+                this.vector = Arrays.copyOf(this.vector, n);
+            }
+            if (i == vector.getSize()) {
+                break;
+            }
+
+            this.vector[i] += vector.vector[i];
         }
 
     }
 
     public void subtract(Vector vector) {
         int n = Math.max(this.getSize(), vector.getSize());
-        Vector tempVector = new Vector(n);
-        if (this.getSize() < vector.getSize()) {
-            this.vector = Arrays.copyOf(this.vector, n);
-            tempVector.vector = Arrays.copyOf(vector.vector, n);
-        }
-
-        if (this.getSize() > vector.getSize()) {
-            tempVector.vector = Arrays.copyOf(vector.vector, n);
-        }
 
         for (int i = 0; i < n; ++i) {
+            if (i == this.getSize()) {
+                this.vector = Arrays.copyOf(this.vector, n);
+            }
+
+            if (i == vector.getSize()) {
+                break;
+            }
             this.vector[i] -= vector.vector[i];
         }
-
 
     }
 
@@ -136,13 +132,13 @@ public class Vector {
     }
 
     public static Vector addition(Vector v1, Vector v2) {
-        Vector result = new Vector(v1.getSize(), v1.vector);
+        Vector result = new Vector(v1);
         result.add(v2);
         return result;
     }
 
     public static Vector subtraction(Vector v1, Vector v2) {
-        Vector result = new Vector(v1.getSize(), v1.vector);
+        Vector result = new Vector(v1);
         result.subtract(v2);
         return result;
     }
