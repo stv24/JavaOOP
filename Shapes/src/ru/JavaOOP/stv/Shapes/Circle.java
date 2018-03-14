@@ -34,13 +34,12 @@ public class Circle implements Shape {
 
         Circle circle = (Circle) o;
 
-        return Double.compare(circle.radius, radius) == 0;
+        return (circle.radius == radius);
     }
 
     @Override
     public int hashCode() {
-        long temp = Double.doubleToLongBits(radius);
-        return (int) (temp ^ (temp >>> 32));
+        return (int) radius;
     }
 
     @Override

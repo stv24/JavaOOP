@@ -9,12 +9,12 @@ public class Main {
 
 
     public static Shape getMaxAreaShape(Shape[] shapes) {
-        Arrays.sort(shapes, Shape.areaComparator);
+        Arrays.sort(shapes, new AreaComparator());
         return shapes[shapes.length - 1];
     }
 
     public static Shape getSecondPerimeterShape(Shape[] shapes) {
-        Arrays.sort(shapes, Shape.perimeterComparator);
+        Arrays.sort(shapes, new PerimeterComparator());
         return shapes[shapes.length - 2];
 
     }

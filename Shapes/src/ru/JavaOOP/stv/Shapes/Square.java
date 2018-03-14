@@ -29,18 +29,19 @@ public class Square implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == this) return true;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Square square = (Square) o;
 
-        return Double.compare(square.length, length) == 0;
+        return square.length == length;
     }
 
     @Override
     public int hashCode() {
-        long temp = Double.doubleToLongBits(length);
-        return (int) (temp ^ (temp >>> 32));
+        return (int) length;
     }
 
     @Override

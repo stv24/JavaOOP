@@ -28,18 +28,16 @@ public class Rectangle implements Shape {
 
         Rectangle rectangle = (Rectangle) o;
 
-        return Double.compare(rectangle.width, width) == 0 && Double.compare(rectangle.height, height) == 0;
+        return o == this || (rectangle.width == width && rectangle.height == height);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(width);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(height);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        final int prime = 31;
+        int hash = 1;
+        hash = prime * hash + (int) width;
+        hash = prime * hash + (int) height;
+        return hash;
     }
 
     @Override
