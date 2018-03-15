@@ -21,7 +21,9 @@ public class Rectangle implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -35,8 +37,8 @@ public class Rectangle implements Shape {
     public int hashCode() {
         final int prime = 31;
         int hash = 1;
-        hash = prime * hash + (int) width;
-        hash = prime * hash + (int) height;
+        hash = prime * hash + Double.hashCode(width);
+        hash = prime * hash + Double.hashCode(height);
         return hash;
     }
 
@@ -52,6 +54,6 @@ public class Rectangle implements Shape {
 
     @Override
     public String toString() {
-        return "Rectangle width " + width + " height " + height;
+        return "Прямоугольник: шириной " + width + ", высотой " + height;
     }
 }

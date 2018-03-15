@@ -18,7 +18,7 @@ public class Triangle implements Shape {
         this.y3 = y3;
     }
 
-    public double getSideLength(double x1, double y1, double x2, double y2) {
+    private static double getSideLength(double x1, double y1, double x2, double y2) {
         return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
 
@@ -43,7 +43,9 @@ public class Triangle implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -58,12 +60,12 @@ public class Triangle implements Shape {
     public int hashCode() {
         final int prime = 17;
         int hash = 1;
-        hash = hash * prime + (int) x1;
-        hash = hash * prime + (int) y1;
-        hash = hash * prime + (int) x2;
-        hash = hash * prime + (int) y2;
-        hash = hash * prime + (int) x3;
-        hash = hash * prime + (int) y3;
+        hash = hash * prime + Double.hashCode(x1);
+        hash = hash * prime + Double.hashCode(y1);
+        hash = hash * prime + Double.hashCode(x2);
+        hash = hash * prime + Double.hashCode(y2);
+        hash = hash * prime + Double.hashCode(x3);
+        hash = hash * prime + Double.hashCode(y3);
         return hash;
     }
 
@@ -90,6 +92,6 @@ public class Triangle implements Shape {
 
     @Override
     public String toString() {
-        return "Triangle x1 " + x1 + " y1 " + y1 + " x2 " + x2 + " y2 " + y2 + " x3 " + x3 + " y3 " + y3;
+        return "Треугольник с вершинами: A(" + x1 + ", " + y1 + "), B(" + x2 + ", " + y2 + "), C(" + x3 + ", " + y3 + ")";
     }
 }

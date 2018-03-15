@@ -8,12 +8,12 @@ import java.util.Arrays;
 public class Main {
 
 
-    public static Shape getMaxAreaShape(Shape[] shapes) {
+   private static Shape getMaxAreaShape(Shape[] shapes) {
         Arrays.sort(shapes, new AreaComparator());
         return shapes[shapes.length - 1];
     }
 
-    public static Shape getSecondPerimeterShape(Shape[] shapes) {
+    private static Shape getSecondPerimeterShape(Shape[] shapes) {
         Arrays.sort(shapes, new PerimeterComparator());
         return shapes[shapes.length - 2];
 
@@ -26,9 +26,9 @@ public class Main {
         Shape maxAreaShape = getMaxAreaShape(shapes);
         Shape secondPerimeterShape = getSecondPerimeterShape(shapes);
 
-        System.out.println("Фигура с максимальной площадью " + maxAreaShape.toString());
+        System.out.println("Фигура с максимальной площадью: " + maxAreaShape.toString());
 
-        System.out.println("Фигура со вторым по величине периметром " + secondPerimeterShape.toString());
+        System.out.println("Фигура со вторым по величине периметром: " + secondPerimeterShape.toString());
 
 
     }

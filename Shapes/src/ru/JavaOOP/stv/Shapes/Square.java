@@ -29,7 +29,9 @@ public class Square implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
+        if (o == this) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -41,11 +43,11 @@ public class Square implements Shape {
 
     @Override
     public int hashCode() {
-        return (int) length;
+        return Double.hashCode(length);
     }
 
     @Override
     public String toString() {
-        return "Square a " + length;
+        return "Квадрат со стороной " + length;
     }
 }

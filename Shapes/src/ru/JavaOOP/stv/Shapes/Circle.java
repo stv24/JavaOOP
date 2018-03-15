@@ -29,8 +29,12 @@ public class Circle implements Shape {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Circle circle = (Circle) o;
 
@@ -39,11 +43,11 @@ public class Circle implements Shape {
 
     @Override
     public int hashCode() {
-        return (int) radius;
+        return Double.hashCode(radius);
     }
 
     @Override
     public String toString() {
-        return "Circle " + radius;
+        return "Окружность с радиусом " + radius;
     }
 }
