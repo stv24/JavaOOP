@@ -27,12 +27,11 @@ public class ArrayListHome {
         ArrayList<Integer> ints3 = new ArrayList<>();
 
         for (int i : ints2) {
-            if (ints2.indexOf(i) == ints2.lastIndexOf(i) && !ints3.contains(i)) {
+            if (!ints3.contains(i)) {
                 ints3.add(i);
             }
         }
-
-
+        System.out.println(ints3);
     }
 
 }
