@@ -5,12 +5,19 @@ import ru.JavaOOP.stv.Vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
-        double[][] array1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[][] array1 = {{1, 2, 3}, {4, 5, 6}};
         double[][] array2 = {{7, 8, 9}, {1, 2, 3}, {6, 5, 4}};
+        double[][] array3 = {{2, 4, 0}, {-2, 1, 3}, {-1, 0, 1}};
+        double[] vector1 = {1, 2, -1};
+        Matrix matrix00 = new Matrix(array3);
+        Vector vector2 = new Vector(vector1);
 
 
+
+        Vector multVector = matrix00.multiply(vector2);
         Matrix matrix0 = new Matrix(3, 3);
         Matrix matrix1 = new Matrix(array1);
+        Matrix matrixt1 = matrix1.transpose();
         Matrix matrix2 = new Matrix(array2);
         Matrix matrix5 = new Matrix(matrix2);
 
