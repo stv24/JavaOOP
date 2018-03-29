@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class ArrayListHome {
@@ -17,8 +18,14 @@ public class ArrayListHome {
 
         System.out.println(strings);
         ArrayList<Integer> ints = new ArrayList<>(Arrays.asList(1, 5, 2, 1, 3, 5, 4));
+        Iterator<Integer> iterator = ints.iterator();
 
-        ints.removeIf((Integer i) -> i % 2 == 0);
+        while (iterator.hasNext()) {
+            Integer value = iterator.next();
+            if (value % 2 == 0) {
+                iterator.remove();
+            }
+        }
 
         System.out.println(ints);
 
