@@ -29,26 +29,26 @@ public class Matrix {
     }
 
     public Matrix(double[][] array) {
-        int rowCount = array.length;
+        int rowsCount = array.length;
 
-        if (rowCount == 0) {
+        if (rowsCount == 0) {
             throw new IllegalArgumentException("размер массива 0");
         }
 
-        int columnCount = array[0].length;
+        int columnsCount = array[0].length;
         for (double[] row : array) {
-            if (row.length > columnCount) {
-                columnCount = row.length;
+            if (row.length > columnsCount) {
+                columnsCount = row.length;
             }
         }
 
-        if (columnCount == 0) {
+        if (columnsCount == 0) {
             throw new IllegalArgumentException("максимальный размер строки 0");
         }
 
-        rows = new Vector[rowCount];
-        for (int i = 0; i < rowCount; ++i) {
-            rows[i] = new Vector(Arrays.copyOf(array[i], columnCount));
+        rows = new Vector[rowsCount];
+        for (int i = 0; i < rowsCount; ++i) {
+            rows[i] = new Vector(columnsCount, array[i]);
         }
     }
 
@@ -60,11 +60,7 @@ public class Matrix {
         for (Vector v : vectors) {
             if (v.getSize() > maxSize) {
                 maxSize = v.getSize();
-
             }
-        }
-        if (maxSize == 0) {
-            throw new IllegalArgumentException("максимальный размер строки 0");
         }
 
         this.rows = new Vector[vectors.length];
@@ -115,13 +111,11 @@ public class Matrix {
     }
 
     public void transpose() {
-        Matrix copy = new Matrix(this);
-        this.rows = new Vector[getColumnsCount()];
-
-        for (int i = 0; i < copy.getColumnsCount(); ++i) {
-            rows[i] = new Vector(copy.getColumn(i));
+        Vector[] columnsCopy = new Vector[getColumnsCount()];
+        for (int i = 0; i < getColumnsCount(); ++i) {
+           columnsCopy[i] = new Vector(getColumn(i));
         }
-
+        rows = columnsCopy;
     }
 
     public void multiply(double value) {
