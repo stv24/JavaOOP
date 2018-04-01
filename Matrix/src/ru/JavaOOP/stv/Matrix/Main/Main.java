@@ -5,6 +5,18 @@ import ru.JavaOOP.stv.Vector.Vector;
 
 public class Main {
     public static void main(String[] args) {
+        double[][] array1_0 = {{2, 4, 1, 1}, {0, 2, 0, 0}, {2, 1, 1, 3}, {4, 0, 2, 3}};
+        Matrix matrix1_0 = new Matrix(array1_0);
+        System.out.println(matrix1_0.getDeterminant());
+
+        double[][] matrix = {{0, 3, -1, 2, 6}, {2, 1, 0, 0, 3}, {-2, -1, 0, 2, 5}, {-5, 7, 1, 1, 1}, {2, 0, 2, -2, 1}};
+        Matrix matrix1_1 = new Matrix(matrix);
+        double[][] arr = {{1, 3, 10, 2, 2, 3, 3}, {-1, 1, 0, 0, 3, 1, 1}, {5, 5, -2, 1, 1, 5, 7}, {17, -4, 4, 1, 1, -4, 7}, {-3, 2, 13, 1, -2, 2, -1}, {-2, 2, 0, 0, 6, 2, 2}, {0, -2, 0, 5, -3, -2, 3}};
+
+        Matrix matrix1_2 = new Matrix(arr);
+        System.out.println(matrix1_1.getDeterminant());
+        System.out.println(matrix1_2.getDeterminant());
+
         double[][] array1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {2, 2, 7}};
         double[][] array2 = {{7, 8, 9}, {1, 2, 3}, {6, 5, 4}};
         Matrix matrix0 = new Matrix(3, 3);

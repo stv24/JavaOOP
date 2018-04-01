@@ -113,7 +113,7 @@ public class Matrix {
     public void transpose() {
         Vector[] columnsCopy = new Vector[getColumnsCount()];
         for (int i = 0; i < getColumnsCount(); ++i) {
-           columnsCopy[i] = new Vector(getColumn(i));
+            columnsCopy[i] = new Vector(getColumn(i));
         }
         rows = columnsCopy;
     }
@@ -125,7 +125,10 @@ public class Matrix {
     }
 
     public double getDeterminant() {
-        int order = rows.length;
+        if (getRowsCount() != getColumnsCount()) {
+            throw new IllegalArgumentException("матрица должна быть квадратной");
+        }
+        int order = getRowsCount();
         double multiplier = 1;
         Vector[] matrix2 = new Vector[order];
         for (int i = 0; i < order; ++i) {
@@ -133,13 +136,17 @@ public class Matrix {
         }
 
         int start = 0;
+        double epsilon = 1e-5;
         while (start < order - 1) {
             for (int i = start; i < order; ++i) {
                 if (i == start) {
-                    if (matrix2[start].getElementAt(start) == 0) {
+                    if (Math.abs(matrix2[start].getElementAt(start)) <= epsilon) {
                         int rowInd = start;
-                        while (matrix2[rowInd + 1].getElementAt(start) == 0) {
+                        while (Math.abs(matrix2[rowInd + 1].getElementAt(start)) <= epsilon) {
                             rowInd++;
+                            if (rowInd == order - 1) {
+                                return 0;
+                            }
                         }
                         for (int k = 0; k < order; ++k) {
                             matrix2[start].setElementAt(k, matrix2[start].getElementAt(k) + matrix2[rowInd + 1].getElementAt(k));
