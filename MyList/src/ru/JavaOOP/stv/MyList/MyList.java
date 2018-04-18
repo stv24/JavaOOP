@@ -13,34 +13,43 @@ public class MyList<T> {
     }
 
     public T getFront() {
+        if (head == null) {
+            throw new NullPointerException("список пуст");
+        }
         return head.getData();
     }
 
-    public T getData(int index) {
-        int ind = 0;
+    private Node<T> getNode(int index) {
 
-        for (Node<T> p = head; p != null; p = p.getNext()) {
-            if (ind == index) {
-                return p.getData();
+        if (index >= 0 && index <= (size - 1)) {
+            int ind = 0;
+            for (Node<T> p = head; p != null; p = p.getNext()) {
+                if (ind == index) {
+                    return p;
+                }
+                ind++;
             }
-            ind++;
         }
-        throw new IndexOutOfBoundsException("не существует элемента по указанном индексу");
+
+        throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
+    }
+
+    public T getData(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
+        }
+        Node<T> node = getNode(index);
+        return node.getData();
     }
 
     public T setData(int index, T data) {
-        int ind = 0;
-
-        for (Node<T> p = head; p != null; p = p.getNext()) {
-            if (ind == index) {
-                T oldData = p.getData();
-                p.setData(data);
-                return oldData;
-            }
-            ind++;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
         }
-        throw new IndexOutOfBoundsException("не существует элемента по указанном индексу");
-
+        Node<T> node = getNode(index);
+        T oldData = node.getData();
+        node.setData(data);
+        return oldData;
     }
 
     public void addFront(T data) {
@@ -51,6 +60,9 @@ public class MyList<T> {
     }
 
     public T removeFront() {
+        if (head == null) {
+            throw new NullPointerException("список пуст");
+        }
         T data = head.getData();
         head = head.getNext();
         --size;
@@ -58,6 +70,9 @@ public class MyList<T> {
     }
 
     public T remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
+        }
         int ind = 0;
         T data = null;
         for (Node<T> p = head; p != null; p = p.getNext()) {
@@ -73,8 +88,8 @@ public class MyList<T> {
     }
 
     public void add(int index, T element) {
-        if (element == null) {
-            throw new NullPointerException("пустое значение");
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
         }
         Node<T> node = new Node<>(element);
         int ind = 0;
@@ -96,8 +111,12 @@ public class MyList<T> {
         for (Node<T> p = head, prev = null; p != null; prev = p, p = p.getNext()) {
             if (p.getData().equals(element)) {
                 Node<T> toDel = p;
-                p = prev;
-                p.setNext(toDel.getNext());
+                if (prev == null) {
+                    head = head.getNext();
+                } else {
+                    p = prev;
+                    p.setNext(toDel.getNext());
+                }
                 --size;
                 return true;
             }
@@ -121,20 +140,57 @@ public class MyList<T> {
 
     public MyList<T> getCopy() {
         MyList<T> newList = new MyList<>();
-        Node<T> node = head;
-        Node<T> copy = new Node<>(node.getData(), node.getNext());
-        Node<T> head2 = copy;
 
-        while (node.getNext() != null) {
-            Node<T> next = new Node<>((node.getNext()).getData(), (node.getNext()).getNext());
-            copy.setNext(next);
-            node = node.getNext();
-            copy = copy.getNext();
+        if (head != null) {
+            Node<T> node = head;
+            Node<T> copy = new Node<>(node.getData(), node.getNext());
+            Node<T> head2 = copy;
+
+            while (node.getNext() != null) {
+                Node<T> next = new Node<>((node.getNext()).getData(), (node.getNext()).getNext());
+                copy.setNext(next);
+                node = node.getNext();
+                copy = copy.getNext();
+            }
+            newList.head = head2;
+            newList.size = size;
         }
-        newList.head = head2;
-        newList.size = size;
+
         return newList;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (Node<T> p = head; p != null; p = p.getNext()) {
+            sb.append((p.getData()).toString());
+            sb.append(", ");
+        }
+        sb.delete(sb.length() - 2, sb.length() - 1);
+        sb.append("}");
+        return sb.toString();
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MyList<?> myList = (MyList<?>) o;
+
+        return (size == myList.size)
+                && (head != null ? head.equals(myList.head) : myList.head == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = head != null ? head.hashCode() : 0;
+        result = 31 * result + size;
+        return result;
+    }
 }
