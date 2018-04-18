@@ -29,10 +29,10 @@ public class Main {
 
         Integer c2 = list.remove(3);
 
-       boolean d = list.remove((Integer) 7);
+        boolean d = list.remove((Integer) 7);
 
         list2.addFront(20);
-        list2.remove((Integer)20);
+        list2.remove((Integer) 20);
 
 
     }
