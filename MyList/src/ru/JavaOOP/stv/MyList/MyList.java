@@ -1,6 +1,7 @@
 package ru.JavaOOP.stv.MyList;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class MyList<T> {
     private Node<T> head;
@@ -65,7 +66,7 @@ public class MyList<T> {
 
     public T removeFront() {
         if (head == null) {
-            throw new NullPointerException("список пуст");
+            throw new NoSuchElementException("список пуст");
         }
         T data = head.getData();
         head = head.getNext();
@@ -78,11 +79,18 @@ public class MyList<T> {
             throw new IndexOutOfBoundsException("не существует элемента с таким индексом");
         }
 
-        Node<T> nodeDel = getNode(index);
-        Node<T> p = getNode(index - 1);
-        p.setNext(nodeDel.getNext());
-        --size;
-        return nodeDel.getData();
+
+        T data;
+        if (index == 0) {
+            data = removeFront();
+        } else {
+            Node<T> p = getNode(index - 1);
+            data = p.getNext().getData();
+            p.setNext(p.getNext().getNext());
+            --size;
+        }
+
+        return data;
     }
 
     public void add(int index, T element) {
@@ -92,20 +100,13 @@ public class MyList<T> {
 
         if (index == 0) {
             addFront(element);
-
         } else {
             Node<T> node = new Node<>(element);
-            int i = 0;
-
-            for (Node<T> p = head; p != null; p = p.getNext()) {
-                if (i == index - 1) {
-                    if (p.getNext() != null) {
-                        node.setNext(p.getNext());
-                    }
-                    p.setNext(node);
-                }
-                i++;
+            Node<T> targetNode = getNode(index - 1);
+            if (targetNode.getNext() != null) {
+                node.setNext(targetNode.getNext());
             }
+            targetNode.setNext(node);
             ++size;
         }
 
@@ -113,7 +114,7 @@ public class MyList<T> {
 
     public boolean remove(T element) {
         for (Node<T> p = head, prev = null; p != null; prev = p, p = p.getNext()) {
-            if (p.getData() != null && p.getData().equals(element) || p.getData() == null && element == null) {
+            if (Objects.equals(p.getData(), element)) {
                 Node<T> toDel = p;
                 if (prev == null) {
                     head = head.getNext();
@@ -177,7 +178,7 @@ public class MyList<T> {
         return sb.toString();
     }
 
-    @Override
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -187,15 +188,24 @@ public class MyList<T> {
         }
 
         MyList<?> myList = (MyList<?>) o;
-
-        return (size == myList.size)
-                && (head != null ? head.equals(myList.head) : myList.head == null);
+        if (size != myList.size) {
+            return false;
+        } else {
+            for (Node<?> p = head, p2 = myList.head; p != null; p = p.getNext(), p2 = p2.getNext()) {
+                if (!Objects.equals(p.getData(), p2.getData())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = head != null ? head.hashCode() : 0;
-        result = 31 * result + size;
-        return result;
+        final int prime = 31;
+        int hash = 1;
+        hash = prime * hash + size;
+        hash = prime * hash + (head != null ? head.hashCode() : 0);
+        return hash;
     }
 }

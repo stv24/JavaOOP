@@ -16,11 +16,12 @@ public class Main {
         }
 
         list.add(1, 7);
-        list.add(2, null);
+        //list.add(2, null);
 
         list.invert();
 
         MyList<Integer> list2 = list.getCopy();
+        boolean eq = list.equals(list2);
 
         Integer a = list.getFront();
 
@@ -31,6 +32,7 @@ public class Main {
         Integer c = list.removeFront();
 
         Integer c2 = list.remove(3);
+        Integer c3 = list.remove(0);
 
         boolean d = list.remove((Integer) 7);
 
