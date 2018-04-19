@@ -205,7 +205,16 @@ public class MyList<T> {
         final int prime = 31;
         int hash = 1;
         hash = prime * hash + size;
-        hash = prime * hash + (head != null ? head.hashCode() : 0);
+        int hash2 = 0;
+        if (head != null) {
+            for (Node<?> p = head; p != null; p = p.getNext()) {
+                hash2 += p.getData() != null ? p.getData().hashCode() : 0;
+            }
+            hash = prime * hash + hash2;
+        } else {
+            hash = prime * hash;
+        }
+
         return hash;
     }
 }

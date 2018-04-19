@@ -43,6 +43,7 @@ public class Main {
         list2.add(3, null);
         list2.invert();
         boolean d2 = list2.remove(null);
+        int hash = list2.hashCode();
 
     }
 }
