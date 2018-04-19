@@ -6,6 +6,8 @@ import ru.JavaOOP.stv.MyList.Node;
 public class Main {
     public static void main(String[] args) {
         Node<Integer> node = new Node<>(1);
+        Node<Integer> node2 = new Node<>(null);
+
         MyList<Integer> list = new MyList<>();
         list.addFront(1);
 
@@ -14,6 +16,7 @@ public class Main {
         }
 
         list.add(1, 7);
+        list.add(2, null);
 
         list.invert();
 
@@ -33,7 +36,11 @@ public class Main {
 
         list2.addFront(20);
         list2.remove((Integer) 20);
-
+        list2.add(0, -1);
+        list2.addFront(null);
+        list2.add(3, null);
+        list2.invert();
+        boolean d2 = list2.remove(null);
 
     }
 }

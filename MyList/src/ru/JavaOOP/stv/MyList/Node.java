@@ -32,28 +32,7 @@ public class Node<T> {
 
     @Override
     public String toString() {
-        return data.toString();
+        return data == null ? "null" : data.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Node<?> node = (Node<?>) o;
-
-        return (next != null ? !next.equals(node.next) : node.next == null)
-                && (data != null ? data.equals(node.data) : node.data == null);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = next != null ? next.hashCode() : 0;
-        result = 31 * result + (data != null ? data.hashCode() : 0);
-        return result;
-    }
 }
