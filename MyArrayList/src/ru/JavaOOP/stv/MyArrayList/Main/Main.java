@@ -8,13 +8,14 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 public class Main {
-    public  static void main(String[] args) {
+    public static void main(String[] args) {
         MyArrayList<Integer> iList = new MyArrayList<>(15);
         for (int i = 0; i < 5; ++i) {
             iList.add(i + 2);
         }
-
+        String str = iList.toString();
         iList.add(2, -1);
+        iList.add(iList.size(), 122);
         Object[] a = iList.toArray();
 
         Integer[] c = new Integer[iList.size()];
@@ -61,14 +62,14 @@ public class Main {
 
         Iterator<Integer> it = iList.iterator();
         while (it.hasNext()) {
-            if(it.next()%2 == 0){
+            if (it.next() % 2 == 0) {
                 it.remove();
             }
         }
 
         iList.addAll(new ArrayList<>(Arrays.asList(8, 10, 12, 14)));
         ListIterator<Integer> listIt = iList.listIterator();
-        while (listIt.hasNext()){
+        while (listIt.hasNext()) {
             int value = listIt.next();
             if (value % 2 == 0) {
                 listIt.remove();
@@ -81,20 +82,34 @@ public class Main {
 
         }
 
-        ListIterator<Integer> listIt2 = iList.listIterator(iList.size());
-        while (listIt.hasPrevious()){
+        ListIterator<Integer> listIt2 = iList.listIterator(iList.size() - 1);
+        while (listIt2.hasPrevious()) {
             int value = listIt2.previous();
             if (value % 2 != 0) {
                 listIt2.remove();
-                //listIt2.add(value + 1);
+                listIt2.add(value + 1);
             }
 
             if (value == 8) {
                 listIt2.set(value + 7);
             }
-
         }
 
+        Integer[] a2 = new Integer[10];
+        a2 = iList2.toArray(a2);
+        a2.toString();
+
+        Integer[] a3 = new Integer[3];
+        a3 = iList.toArray(a3);
+
+        boolean removed = strList1.removeAll(strList2);
+        boolean removed2 = iList.removeAll(strList2);
+        iList.add(null);
+        iList.add(0, null);
+        String str2 = iList.toString();
+        int hash = iList.hashCode();
+        int ind = iList.indexOf(null);
+        int lastInd = iList.lastIndexOf(null);
     }
 
 
