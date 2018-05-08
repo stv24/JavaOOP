@@ -45,18 +45,20 @@ public class MyArrayList<E> implements List<E> {
 
         }
 
-        Object[] cArray = c.toArray();
-        if (cArray.length == 0) {
+        if (c.size() == 0) {
             return false;
         }
 
-        int minSize = size() + cArray.length;
-        ensureCapacity(minSize);
+        ensureCapacity(size() + c.size());
         if (index < size()) {
-            System.arraycopy(items, index, items, index + cArray.length, size() - index);
+            System.arraycopy(items, index, items, index + c.size(), size() - index);
         }
-        System.arraycopy(cArray, 0, items, index, cArray.length);
-        length += cArray.length;
+
+        for (Object object : c) {
+            items[index] = (E) object;
+            ++index;
+        }
+        length += c.size();
         ++modCount;
         return true;
     }
@@ -288,19 +290,7 @@ public class MyArrayList<E> implements List<E> {
     }
 
     public boolean addAll(Collection<? extends E> c) {
-        if (c == null) {
-            throw new NullPointerException("попытка добавить пустую коллекцию");
-        }
-        Object[] cArray = c.toArray();
-        if (cArray.length == 0) {
-            return false;
-        } else {
-            ensureCapacity(size() + cArray.length);
-            System.arraycopy(cArray, 0, items, size(), cArray.length);
-            length += cArray.length;
-            modCount++;
-            return true;
-        }
+        return addAll(size(), c);
     }
 
     public boolean remove(Object o) {
@@ -351,7 +341,7 @@ public class MyArrayList<E> implements List<E> {
 
     @SuppressWarnings("unchecked")
     public void ensureCapacity(int minCapacity) {
-        if (minCapacity > size()) {
+        if (minCapacity > items.length) {
             items = Arrays.copyOf(items, minCapacity);
         }
 
