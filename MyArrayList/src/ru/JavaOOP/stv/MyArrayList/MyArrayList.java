@@ -13,7 +13,6 @@ public class MyArrayList<E> implements List<E> {
     public MyArrayList(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("неверная емкость");
-
         }
         items = (E[]) new Object[capacity];
         length = 0;
@@ -41,17 +40,25 @@ public class MyArrayList<E> implements List<E> {
         if (c == null) {
             throw new NullPointerException("пустая коллекция");
         }
-        if (index > length || index < 0) {
-            throw new IllegalArgumentException("недопустимый индекс");
+        if (index > size() || index < 0) {
+            throw new IndexOutOfBoundsException("выход за границы массива");
 
         }
-        int tempModCount = modCount;
-        for (E o : c) {
-            add(index, o);
-            ++index;
+
+        Object[] cArray = c.toArray();
+        if (cArray.length == 0) {
+            return false;
         }
 
-        return tempModCount != modCount;
+        int minSize = size() + cArray.length;
+        ensureCapacity(minSize);
+        if (index < size()) {
+            System.arraycopy(items, index, items, index + cArray.length, size() - index);
+        }
+        System.arraycopy(cArray, 0, items, index, cArray.length);
+        length += cArray.length;
+        ++modCount;
+        return true;
     }
 
     private class MyIterator implements Iterator<E> {
@@ -64,17 +71,18 @@ public class MyArrayList<E> implements List<E> {
 
         public void remove() {
             MyArrayList.this.remove(currentIndex);
-            currentModCount++;
+            currentModCount = MyArrayList.this.modCount;
         }
 
         public E next() {
-            if (currentIndex > size()) {
+            if (currentIndex >= size()) {
                 throw new NoSuchElementException("не существует такого элемента");
             }
-            ++currentIndex;
+
             if (currentModCount != MyArrayList.this.modCount) {
                 throw new ConcurrentModificationException("изменение коллекции за время обхода");
             }
+            ++currentIndex;
             return items[currentIndex];
         }
 
@@ -84,16 +92,15 @@ public class MyArrayList<E> implements List<E> {
     }
 
     private class MyListIterator implements ListIterator<E> {
-        private int currentIndex;
+        private int currentIndex = -1;
         private int currentModCount;
 
         private MyListIterator() {
-            currentIndex = -1;
             currentModCount = MyArrayList.this.modCount;
         }
 
         private MyListIterator(int index) {
-            if (index >= MyArrayList.this.size() || index < 0) {
+            if (index > MyArrayList.this.size() || index < 0) {
                 throw new IndexOutOfBoundsException("указан неверный индекс");
 
             }
@@ -102,13 +109,11 @@ public class MyArrayList<E> implements List<E> {
         }
 
         public int nextIndex() {
-            next();
-            return currentIndex;
+            return currentIndex + 1;
         }
 
         public int previousIndex() {
-            previous();
-            return currentIndex;
+            return currentIndex - 1;
         }
 
         public boolean hasPrevious() {
@@ -116,13 +121,13 @@ public class MyArrayList<E> implements List<E> {
         }
 
         public E previous() {
-            --currentIndex;
-            if (currentIndex < 0) {
+            if (currentIndex <= 0) {
                 throw new NoSuchElementException("не существует такого элемента");
             }
             if (currentModCount != MyArrayList.this.modCount) {
                 throw new ConcurrentModificationException("изменение коллекции во время обхода");
             }
+            --currentIndex;
             return items[currentIndex];
         }
 
@@ -132,22 +137,22 @@ public class MyArrayList<E> implements List<E> {
 
         public void add(E e) {
             MyArrayList.this.add(currentIndex + 1, e);
-            ++currentModCount;
+            currentModCount = MyArrayList.this.modCount;
         }
 
         public void remove() {
             MyArrayList.this.remove(currentIndex);
-            ++currentModCount;
+            currentModCount = MyArrayList.this.modCount;
         }
 
         public E next() {
-            ++currentIndex;
-            if (currentIndex > MyArrayList.this.size()) {
+            if (currentIndex >= MyArrayList.this.size()) {
                 throw new NoSuchElementException("нет такого элемента");
             }
             if (currentModCount != MyArrayList.this.modCount) {
                 throw new ConcurrentModificationException("изменение коллекции во время обхода");
             }
+            ++currentIndex;
             return items[currentIndex];
         }
 
@@ -193,9 +198,10 @@ public class MyArrayList<E> implements List<E> {
         }
         int tempModCount = modCount;
         for (int i = 0; i < size(); ++i) {
-            E object = get(i);
+            Object object = get(i);
             if (c.contains(object)) {
                 remove(object);
+                i--;
             }
         }
         return tempModCount != modCount;
@@ -208,9 +214,10 @@ public class MyArrayList<E> implements List<E> {
 
         int tempModCount = modCount;
         for (int i = 0; i < size(); ++i) {
-            E object = get(i);
+            Object object = get(i);
             if (!c.contains(object)) {
                 remove(object);
+                i--;
             }
         }
         return modCount != tempModCount;
@@ -218,9 +225,7 @@ public class MyArrayList<E> implements List<E> {
 
 
     public boolean add(E e) {
-        if (length > items.length) {
-            ensureCapacity(length + 1);
-        }
+        ensureCapacity(length + 1);
         items[length] = e;
         ++length;
         ++modCount;
@@ -230,7 +235,7 @@ public class MyArrayList<E> implements List<E> {
     public E set(int index, E element) {
 
         if (index >= length || index < 0) {
-            throw new IndexOutOfBoundsException("по указанному индекса элемента не существует");
+            throw new IndexOutOfBoundsException("по указанному индексу элемента не существует");
         }
 
         E oldElement = items[index];
@@ -286,11 +291,16 @@ public class MyArrayList<E> implements List<E> {
         if (c == null) {
             throw new NullPointerException("попытка добавить пустую коллекцию");
         }
-        int tempModCount = modCount;
-        for (E o : c) {
-            add(o);
+        Object[] cArray = c.toArray();
+        if (cArray.length == 0) {
+            return false;
+        } else {
+            ensureCapacity(size() + cArray.length);
+            System.arraycopy(cArray, 0, items, size(), cArray.length);
+            length += cArray.length;
+            modCount++;
+            return true;
         }
-        return tempModCount != modCount;
     }
 
     public boolean remove(Object o) {
@@ -315,14 +325,11 @@ public class MyArrayList<E> implements List<E> {
     public void add(int index, E element) {
         if (index < 0 || index > size()) {
             throw new IndexOutOfBoundsException("недопустимый индекс");
-
         }
         ++modCount;
-        if (length >= items.length) {
-            ensureCapacity(length + 1);
-        }
+        ensureCapacity(length + 1);
+        System.arraycopy(items, index, items, index + 1, length - index);
         ++length;
-        System.arraycopy(items, index, items, index + 1, length - index + 1);
         items[index] = element;
 
     }
@@ -332,11 +339,12 @@ public class MyArrayList<E> implements List<E> {
         if (index < 0 || index >= length) {
             throw new IndexOutOfBoundsException("выход за границы диапазона");
         }
-        ++modCount;
+
         E oldElement = items[index];
-        if (index < length - 1) {
+        if (index < length) {
             System.arraycopy(items, index + 1, items, index, length - index - 1);
         }
+        ++modCount;
         --length;
         return oldElement;
     }
@@ -344,16 +352,18 @@ public class MyArrayList<E> implements List<E> {
     @SuppressWarnings("unchecked")
     public void ensureCapacity(int minCapacity) {
         if (minCapacity > size()) {
-            E[] old = items;
-            items = (E[]) new Object[minCapacity];
-            items = Arrays.copyOf(old, minCapacity);
+            items = Arrays.copyOf(items, minCapacity);
         }
 
     }
 
     public void trimToSize() {
-        ensureCapacity(size());
+        int itemsLength = items.length;
+        if (itemsLength > size()) {
+            items = Arrays.copyOf(items, size());
+        }
     }
+
 
     @Override
     public String toString() {
@@ -400,7 +410,8 @@ public class MyArrayList<E> implements List<E> {
         hash = prime * hash + length;
 
         int hash2 = 0;
-        for (E object : items) {
+        for (int i = 0; i < size(); ++i) {
+            E object = get(i);
             int sum = object == null ? 0 : object.hashCode();
             hash2 += sum;
         }
@@ -410,3 +421,4 @@ public class MyArrayList<E> implements List<E> {
 
 
 }
+
