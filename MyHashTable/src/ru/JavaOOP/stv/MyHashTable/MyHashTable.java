@@ -30,15 +30,14 @@ public class MyHashTable<T> implements Collection<T> {
         int index = 0;
         for (ArrayList<T> list : arrayLists) {
             if (list != null) {
-                Object[] iList = list.toArray();
-                index += iList.length;
-                System.arraycopy(iList, 0, a, index - iList.length, iList.length);
+                Object[] listArray = list.toArray();
+                index += listArray.length;
+                System.arraycopy(listArray, 0, a, index - listArray.length, listArray.length);
             }
         }
         if (a.length > elementsCount) {
             a[elementsCount] = null;
         }
-
         return a;
     }
 
@@ -51,9 +50,9 @@ public class MyHashTable<T> implements Collection<T> {
         int index = 0;
         for (ArrayList<T> list : arrayLists) {
             if (list != null) {
-                Object[] iList = list.toArray();
-                index += iList.length;
-                System.arraycopy(iList, 0, a, index - iList.length, iList.length);
+                Object[] listArray = list.toArray();
+                index += listArray.length;
+                System.arraycopy(listArray, 0, a, index - listArray.length, listArray.length);
             }
         }
         return a;
@@ -62,7 +61,6 @@ public class MyHashTable<T> implements Collection<T> {
     @SuppressWarnings("unchecked")
     public boolean add(T e) {
         int index = Math.abs(e.hashCode() % arrayLists.length);
-        int oldModCount = modCount;
 
         if (arrayLists[index] == null) {
             arrayLists[index] = new ArrayList<>();
@@ -70,28 +68,32 @@ public class MyHashTable<T> implements Collection<T> {
         arrayLists[index].add(e);
         ++elementsCount;
         ++modCount;
+
         if ((double) elementsCount / arrayLists.length > loadFactor) {
             ArrayList<T> collection = new ArrayList(Arrays.asList(this.toArray()));
             arrayLists = new ArrayList[arrayLists.length * 2];
             addAll(collection);
         }
-        return oldModCount != modCount;
+        return true;
     }
 
-    @SuppressWarnings("unchecked")
+
     public boolean addAll(Collection<? extends T> c) {
         int oldModCount = modCount;
         if (c == null) {
             throw new NullPointerException("addAll: передана пустая коллекция");
         }
-        for (Object object : c) {
-            add((T) object);
+        for (T object : c) {
+            add(object);
         }
         return oldModCount != modCount;
     }
 
     public boolean contains(Object o) {
         int index = Math.abs(o.hashCode() % arrayLists.length);
+        if (arrayLists[index] == null) {
+            return false;
+        }
         ArrayList<T> list = arrayLists[index];
         return list.contains(o);
     }
@@ -131,20 +133,22 @@ public class MyHashTable<T> implements Collection<T> {
         }
 
         public T next() {
+            if (modCountCurrent != MyHashTable.this.modCount) {
+                throw new ConcurrentModificationException("изменение коллекции за время обхода");
+            }
+            if (arrayLists[currentIndex] != null) {
+                if (innerIndex < arrayLists[currentIndex].size() - 1) {
+                    ++innerIndex;
+                    ++elementsCount;
+                    return arrayLists[currentIndex].get(innerIndex);
+                }
+                ++currentIndex;
+            }
             while (arrayLists[currentIndex] == null) {
                 ++currentIndex;
             }
-            if (innerIndex < arrayLists[currentIndex].size() - 1) {
-                ++innerIndex;
-                ++elementsCount;
-            } else {
-                ++currentIndex;
-                while (arrayLists[currentIndex] == null) {
-                    ++currentIndex;
-                }
-                innerIndex = 0;
-                ++elementsCount;
-            }
+            innerIndex = 0;
+            ++elementsCount;
             return arrayLists[currentIndex].get(innerIndex);
         }
 
@@ -163,8 +167,9 @@ public class MyHashTable<T> implements Collection<T> {
         if (arrayLists[index] == null) {
             return false;
         }
-        ++modCount;
-        return arrayLists[index].remove(o);
+        int oldModCount = modCount;
+        modCount = arrayLists[index].remove(o) ? modCount + 1 : modCount;
+        return oldModCount != modCount;
     }
 
     public boolean removeAll(Collection<?> c) {
@@ -176,13 +181,7 @@ public class MyHashTable<T> implements Collection<T> {
             if (list == null) {
                 continue;
             }
-            for (int i = 0; i < list.size(); ++i) {
-                T object = list.get(i);
-                if (c.contains(object)) {
-                    remove(object);
-                    --i;
-                }
-            }
+            list.removeAll(c);
         }
         return oldModCount != modCount;
     }
@@ -196,23 +195,12 @@ public class MyHashTable<T> implements Collection<T> {
             if (list == null) {
                 continue;
             }
-            for (int i = 0; i < list.size(); ++i) {
-                T object = list.get(i);
-                if (!c.contains(object)) {
-                    remove(object);
-                    --i;
-                }
-            }
+            list.retainAll(c);
         }
         return oldModCount != modCount;
     }
 
     public int size() {
-        int elementsCount = 0;
-        for (ArrayList object : arrayLists) {
-            int toAdd = object == null ? 0 : object.size();
-            elementsCount += toAdd;
-        }
         return elementsCount;
     }
 
@@ -246,18 +234,11 @@ public class MyHashTable<T> implements Collection<T> {
         }
 
         for (int i = 0; i < this.arrayLists.length; ++i) {
-            if (object.arrayLists[i] == null && arrayLists[i] == null) {
-                continue;
-            } else if ((object.arrayLists[i] == null && object.arrayLists[i] != null) || (object.arrayLists[i] != null && object.arrayLists[i] == null)) {
-                return false;
-            }
-            if (!object.arrayLists[i].equals(arrayLists[i])) {
+            if (!Objects.equals(object.arrayLists[i], arrayLists[i])) {
                 return false;
             }
         }
-
         return true;
-
     }
 
     @Override

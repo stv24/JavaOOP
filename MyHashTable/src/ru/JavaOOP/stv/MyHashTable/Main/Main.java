@@ -23,7 +23,7 @@ public class Main {
         Iterator<Integer> iterator = intTable.iterator();
 
         while (iterator.hasNext()) {
-            iterator.next();
+            System.out.println(iterator.next());
             iterator.remove();
         }
         String str = intTable.toString();
