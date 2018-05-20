@@ -20,8 +20,12 @@ public class Main {
         // String elstr = elements.toString();
         int size = intTable.size();
         String intTable1 = intTable.toString();
-        Iterator<Integer> iterator = intTable.iterator();
 
+        for(Integer e: intTable){
+            System.out.println(e);
+
+        }
+        Iterator<Integer> iterator = intTable.iterator();
         while (iterator.hasNext()) {
             System.out.println(iterator.next());
             iterator.remove();

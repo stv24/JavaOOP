@@ -23,20 +23,13 @@ public class MyHashTable<T> implements Collection<T> {
         if (a == null) {
             throw new NullPointerException("toArray: передан пустой массив");
         }
-
         if (a.length < elementsCount) {
             a = (E[]) new Object[elementsCount];
         }
         int index = 0;
-        for (ArrayList<T> list : arrayLists) {
-            if (list != null) {
-                Object[] listArray = list.toArray();
-                index += listArray.length;
-                System.arraycopy(listArray, 0, a, index - listArray.length, listArray.length);
-            }
-        }
-        if (a.length > elementsCount) {
-            a[elementsCount] = null;
+        for (T e : this) {
+            a[index] = (E) e;
+            index++;
         }
         return a;
     }
@@ -48,12 +41,9 @@ public class MyHashTable<T> implements Collection<T> {
     public Object[] toArray() {
         Object[] a = new Object[this.size()];
         int index = 0;
-        for (ArrayList<T> list : arrayLists) {
-            if (list != null) {
-                Object[] listArray = list.toArray();
-                index += listArray.length;
-                System.arraycopy(listArray, 0, a, index - listArray.length, listArray.length);
-            }
+        for (T e : this) {
+            a[index] = e;
+            index++;
         }
         return a;
     }
