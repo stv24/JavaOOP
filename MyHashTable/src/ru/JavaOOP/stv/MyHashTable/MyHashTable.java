@@ -24,7 +24,8 @@ public class MyHashTable<T> implements Collection<T> {
             throw new NullPointerException("toArray: передан пустой массив");
         }
         if (a.length < elementsCount) {
-            a = (E[]) new Object[elementsCount];
+            Object[] elements = this.toArray();
+            return (E[]) Arrays.copyOf(elements, elements.length, a.getClass());
         }
         int index = 0;
         for (T e : this) {
@@ -35,7 +36,13 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     public void clear() {
+        for (ArrayList<T> list : arrayLists) {
+            if (list != null) {
+                list.clear();
+            }
+        }
         elementsCount = 0;
+        ++modCount;
     }
 
     public Object[] toArray() {
@@ -50,7 +57,8 @@ public class MyHashTable<T> implements Collection<T> {
 
     @SuppressWarnings("unchecked")
     public boolean add(T e) {
-        int index = Math.abs(e.hashCode() % arrayLists.length);
+
+        int index = e == null ? 0 : Math.abs(e.hashCode() % arrayLists.length);
 
         if (arrayLists[index] == null) {
             arrayLists[index] = new ArrayList<>();
@@ -60,7 +68,8 @@ public class MyHashTable<T> implements Collection<T> {
         ++modCount;
 
         if ((double) elementsCount / arrayLists.length > loadFactor) {
-            ArrayList<T> collection = new ArrayList(Arrays.asList(this.toArray()));
+            T[] elements = (T[]) new Object[this.size()];
+            List<T> collection = Arrays.asList(this.toArray(elements));
             arrayLists = new ArrayList[arrayLists.length * 2];
             addAll(collection);
         }
@@ -80,7 +89,7 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     public boolean contains(Object o) {
-        int index = Math.abs(o.hashCode() % arrayLists.length);
+        int index = o == null ? 0 : Math.abs(o.hashCode() % arrayLists.length);
         if (arrayLists[index] == null) {
             return false;
         }
@@ -126,20 +135,22 @@ public class MyHashTable<T> implements Collection<T> {
             if (modCountCurrent != MyHashTable.this.modCount) {
                 throw new ConcurrentModificationException("изменение коллекции за время обхода");
             }
-            if (arrayLists[currentIndex] != null) {
-                if (innerIndex < arrayLists[currentIndex].size() - 1) {
-                    ++innerIndex;
+            for (int i = currentIndex; i < arrayLists.length; ++i) {
+
+                if (arrayLists[currentIndex] == null || arrayLists[currentIndex].isEmpty()) {
+                    ++currentIndex;
+                    continue;
+                }
+                ++innerIndex;
+                if (innerIndex < arrayLists[currentIndex].size()) {
                     ++elementsCount;
                     return arrayLists[currentIndex].get(innerIndex);
                 }
-                ++currentIndex;
+                innerIndex = -1;
+                currentIndex++;
+
             }
-            while (arrayLists[currentIndex] == null) {
-                ++currentIndex;
-            }
-            innerIndex = 0;
-            ++elementsCount;
-            return arrayLists[currentIndex].get(innerIndex);
+            throw new IndexOutOfBoundsException("Выход за границы диапазона");
         }
 
         public boolean hasNext() {
@@ -153,7 +164,7 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     public boolean remove(Object o) {
-        int index = Math.abs(o.hashCode() % arrayLists.length);
+        int index = o == null ? 0 : Math.abs(o.hashCode() % arrayLists.length);
         if (arrayLists[index] == null) {
             return false;
         }
@@ -168,10 +179,13 @@ public class MyHashTable<T> implements Collection<T> {
         }
         int oldModCount = modCount;
         for (ArrayList<T> list : arrayLists) {
-            if (list == null) {
-                continue;
+            if (list != null) {
+                modCount = list.removeAll(c) ? modCount + 1 : modCount;
             }
-            list.removeAll(c);
+        }
+
+        if (oldModCount != modCount) {
+            updateSize();
         }
         return oldModCount != modCount;
     }
@@ -182,10 +196,12 @@ public class MyHashTable<T> implements Collection<T> {
         }
         int oldModCount = modCount;
         for (ArrayList<T> list : arrayLists) {
-            if (list == null) {
-                continue;
+            if (list != null) {
+                modCount = list.retainAll(c) ? modCount + 1 : modCount;
             }
-            list.retainAll(c);
+        }
+        if (oldModCount != modCount) {
+            updateSize();
         }
         return oldModCount != modCount;
     }
@@ -243,6 +259,16 @@ public class MyHashTable<T> implements Collection<T> {
         }
         hash = prime * hash + hashSum;
         return hash;
+    }
+
+    private void updateSize() {
+        int elements = 0;
+        for (ArrayList<T> list : arrayLists) {
+            if (list != null) {
+                elements += list.size();
+            }
+        }
+        elementsCount = elements;
     }
 
 }
