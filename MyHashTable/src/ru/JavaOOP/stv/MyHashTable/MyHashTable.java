@@ -58,7 +58,7 @@ public class MyHashTable<T> implements Collection<T> {
     @SuppressWarnings("unchecked")
     public boolean add(T e) {
 
-        int index = e == null ? 0 : Math.abs(e.hashCode() % arrayLists.length);
+        int index = getIndex(e);
 
         if (arrayLists[index] == null) {
             arrayLists[index] = new ArrayList<>();
@@ -71,6 +71,8 @@ public class MyHashTable<T> implements Collection<T> {
             T[] elements = (T[]) new Object[this.size()];
             List<T> collection = Arrays.asList(this.toArray(elements));
             arrayLists = new ArrayList[arrayLists.length * 2];
+            elementsCount = 0;
+            modCount = 0;
             addAll(collection);
         }
         return true;
@@ -89,7 +91,7 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     public boolean contains(Object o) {
-        int index = o == null ? 0 : Math.abs(o.hashCode() % arrayLists.length);
+        int index = getIndex(o);
         if (arrayLists[index] == null) {
             return false;
         }
@@ -135,11 +137,9 @@ public class MyHashTable<T> implements Collection<T> {
             if (modCountCurrent != MyHashTable.this.modCount) {
                 throw new ConcurrentModificationException("изменение коллекции за время обхода");
             }
-            for (int i = currentIndex; i < arrayLists.length; ++i) {
-
-                if (arrayLists[currentIndex] == null || arrayLists[currentIndex].isEmpty()) {
+            while (hasNext()) {
+                while (arrayLists[currentIndex] == null || arrayLists[currentIndex].isEmpty()) {
                     ++currentIndex;
-                    continue;
                 }
                 ++innerIndex;
                 if (innerIndex < arrayLists[currentIndex].size()) {
@@ -148,7 +148,6 @@ public class MyHashTable<T> implements Collection<T> {
                 }
                 innerIndex = -1;
                 currentIndex++;
-
             }
             throw new IndexOutOfBoundsException("Выход за границы диапазона");
         }
@@ -164,12 +163,13 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     public boolean remove(Object o) {
-        int index = o == null ? 0 : Math.abs(o.hashCode() % arrayLists.length);
+        int index = getIndex(o);
         if (arrayLists[index] == null) {
             return false;
         }
         int oldModCount = modCount;
         modCount = arrayLists[index].remove(o) ? modCount + 1 : modCount;
+        --elementsCount;
         return oldModCount != modCount;
     }
 
@@ -180,12 +180,13 @@ public class MyHashTable<T> implements Collection<T> {
         int oldModCount = modCount;
         for (ArrayList<T> list : arrayLists) {
             if (list != null) {
+                int oldSize = list.size();
                 modCount = list.removeAll(c) ? modCount + 1 : modCount;
+                if (modCount != oldModCount) {
+                    int size = list.size();
+                    elementsCount = elementsCount - (oldSize - size);
+                }
             }
-        }
-
-        if (oldModCount != modCount) {
-            updateSize();
         }
         return oldModCount != modCount;
     }
@@ -197,12 +198,15 @@ public class MyHashTable<T> implements Collection<T> {
         int oldModCount = modCount;
         for (ArrayList<T> list : arrayLists) {
             if (list != null) {
+                int oldSize = list.size();
                 modCount = list.retainAll(c) ? modCount + 1 : modCount;
+                if (modCount != oldModCount) {
+                    int size = list.size();
+                    elementsCount -= oldSize - size;
+                }
             }
         }
-        if (oldModCount != modCount) {
-            updateSize();
-        }
+
         return oldModCount != modCount;
     }
 
@@ -261,14 +265,8 @@ public class MyHashTable<T> implements Collection<T> {
         return hash;
     }
 
-    private void updateSize() {
-        int elements = 0;
-        for (ArrayList<T> list : arrayLists) {
-            if (list != null) {
-                elements += list.size();
-            }
-        }
-        elementsCount = elements;
+    private int getIndex(Object e) {
+        return e == null ? 0 : Math.abs(e.hashCode() % arrayLists.length);
     }
 
 }

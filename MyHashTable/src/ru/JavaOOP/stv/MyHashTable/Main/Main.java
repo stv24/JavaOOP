@@ -34,7 +34,13 @@ public class Main {
         String intTable2 = intTable.toString();
         boolean change2 = intTable.retainAll(Arrays.asList(10, 8, 9, 22, 12, null));
         String intTable3 = intTable.toString();
-        intTable.clear();
+        Iterator<Integer> iter = intTable.iterator();
+        while(iter.hasNext()){
+            iter.next();
+            iter.remove();
+
+        }
+        //intTable.clear();
        String test =  intTable.toString();
 
     }
