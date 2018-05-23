@@ -4,8 +4,8 @@ public class Person {
     private String name;
     private int age;
     public Person(String name, int age) {
-       this.name = name;
-       this.age = age;
+        this.name = name;
+        this.age = age;
     }
 
     public String getName(){
@@ -15,6 +15,5 @@ public class Person {
     public int getAge(){
         return age;
     }
-
 
 }
