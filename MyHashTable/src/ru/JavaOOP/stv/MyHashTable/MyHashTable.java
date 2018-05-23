@@ -72,7 +72,6 @@ public class MyHashTable<T> implements Collection<T> {
             List<T> collection = Arrays.asList(this.toArray(elements));
             arrayLists = new ArrayList[arrayLists.length * 2];
             elementsCount = 0;
-            modCount = 0;
             addAll(collection);
         }
         return true;
@@ -117,10 +116,9 @@ public class MyHashTable<T> implements Collection<T> {
     }
 
     private class HashTableIterator implements Iterator<T> {
-        private int currentIndex = 0;
+        private int currentListIndex = 0;
         private int innerIndex = -1;
         private int elementsCount = 0;
-        private int elementsNumber = MyHashTable.this.size();
         private int modCountCurrent;
 
         private HashTableIterator() {
@@ -128,9 +126,10 @@ public class MyHashTable<T> implements Collection<T> {
         }
 
         public void remove() {
-            MyHashTable.this.remove(arrayLists[currentIndex].get(innerIndex));
+            MyHashTable.this.remove(arrayLists[currentListIndex].get(innerIndex));
             innerIndex--;
             modCountCurrent = MyHashTable.this.modCount;
+
         }
 
         public T next() {
@@ -138,22 +137,22 @@ public class MyHashTable<T> implements Collection<T> {
                 throw new ConcurrentModificationException("изменение коллекции за время обхода");
             }
             while (hasNext()) {
-                while (arrayLists[currentIndex] == null || arrayLists[currentIndex].isEmpty()) {
-                    ++currentIndex;
+                while (arrayLists[currentListIndex] == null || arrayLists[currentListIndex].isEmpty()) {
+                    ++currentListIndex;
                 }
                 ++innerIndex;
-                if (innerIndex < arrayLists[currentIndex].size()) {
+                if (innerIndex < arrayLists[currentListIndex].size()) {
                     ++elementsCount;
-                    return arrayLists[currentIndex].get(innerIndex);
+                    return arrayLists[currentListIndex].get(innerIndex);
                 }
                 innerIndex = -1;
-                currentIndex++;
+                currentListIndex++;
             }
-            throw new IndexOutOfBoundsException("Выход за границы диапазона");
+            throw new NoSuchElementException("Элемента не существует");
         }
 
         public boolean hasNext() {
-            return elementsCount < elementsNumber;
+            return elementsCount < MyHashTable.this.size();
         }
 
     }
@@ -164,7 +163,7 @@ public class MyHashTable<T> implements Collection<T> {
 
     public boolean remove(Object o) {
         int index = getIndex(o);
-        if (arrayLists[index] == null) {
+        if (arrayLists[index] == null || arrayLists[index].isEmpty()) {
             return false;
         }
         int oldModCount = modCount;
@@ -268,5 +267,4 @@ public class MyHashTable<T> implements Collection<T> {
     private int getIndex(Object e) {
         return e == null ? 0 : Math.abs(e.hashCode() % arrayLists.length);
     }
-
 }
