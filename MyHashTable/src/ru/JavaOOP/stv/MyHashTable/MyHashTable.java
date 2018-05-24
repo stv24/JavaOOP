@@ -163,12 +163,14 @@ public class MyHashTable<T> implements Collection<T> {
 
     public boolean remove(Object o) {
         int index = getIndex(o);
-        if (arrayLists[index] == null || arrayLists[index].isEmpty()) {
+        if (arrayLists[index] == null) {
             return false;
         }
         int oldModCount = modCount;
         modCount = arrayLists[index].remove(o) ? modCount + 1 : modCount;
-        --elementsCount;
+        if (modCount != oldModCount) {
+            --elementsCount;
+        }
         return oldModCount != modCount;
     }
 

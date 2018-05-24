@@ -15,6 +15,7 @@ public class Main {
         String stre = intTable.toString();
         intTable0.addAll(Arrays.asList(1, 10, 12, 7, 8, 7, 9));
         boolean eq2 = intTable.equals(intTable0);
+        intTable.remove(127);
         intTable.add(127);
         Object[] elements = intTable.toArray();
         Object[] iElements = intTable.toArray(new Integer[4]);

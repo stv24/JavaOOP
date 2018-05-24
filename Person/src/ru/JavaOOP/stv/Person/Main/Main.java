@@ -15,7 +15,7 @@ public class Main {
                 new Person("Igor", 30), new Person("Igor", 17));
 
         List<String> distinctNames = persons.stream().
-                map(p -> p.getName()).distinct().collect(Collectors.toList());
+                map(Person::getName).distinct().collect(Collectors.toList());
 
         String names = distinctNames.toString();
         System.out.println(distinctNames.stream().
@@ -25,15 +25,16 @@ public class Main {
         List<Person> peoplesYounger18 = persons.stream().
                 filter(p -> p.getAge() < 18).collect(Collectors.toList());
 
-        OptionalDouble averageAge = peoplesYounger18.stream().mapToInt(p -> p.getAge()).average();
+        OptionalDouble averageAge = peoplesYounger18.stream().mapToInt(Person::getAge).average();
 
-        Map<String, List<Person>> personsByName = persons.stream().collect(Collectors.groupingBy(p -> p.getName()));
-        Map<String, OptionalDouble> averageAges = personsByName.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
-                .stream().mapToInt(p -> p.getAge()).average()));
+        Map<String, List<Person>> personsByName = persons.stream().collect(Collectors.groupingBy(Person::getName));
+
+        Map<String, Double> averageAges = persons.stream().collect(Collectors.
+                groupingBy(Person::getName, Collectors.averagingInt(Person::getAge)));
 
         List<Person> personsRange = persons.stream().filter(p -> p.getAge() > 20 && p.getAge() < 45)
-                .collect(Collectors.toList());
+                .sorted((p1, p2) -> (p2.getAge() - p1.getAge())).collect(Collectors.toList());
 
-        personsRange.stream().sorted((p1, p2) -> (p2.getAge() - p1.getAge())).forEach(p -> System.out.println(p.getName()));
+        personsRange.forEach(p -> System.out.println(p.getName()));
     }
 }
