@@ -1,14 +1,16 @@
 package ru.JavaOOP.stv.TemperaturesView;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class TemperaturesView {
     private JTextField inputField;
     private JTextField outputField;
-    private JComboBox<String> inputBox;
-    private JComboBox<String> outputBox;
-    private JButton button;
+    private JComboBox<String> inputUnits;
+    private JComboBox<String> outputUnits;
+    private JButton convertButton;
 
 
     public TemperaturesView() {
@@ -16,15 +18,22 @@ public class TemperaturesView {
         outputField = new JTextField(7);
         outputField.setText("");
         outputField.setEditable(false);
-        String[] units = {"F", "C", "K"};
-        inputBox = new JComboBox<>(units);
-        outputBox = new JComboBox<>(units);
-        button = new JButton();
+        inputUnits = new JComboBox<>();
+        outputUnits = new JComboBox<>();
+        convertButton = new JButton();
+    }
+
+    public void setScales(String[] scales) {
+        for (String scale : scales) {
+            inputUnits.addItem(scale);
+            outputUnits.addItem(scale);
+        }
+
     }
 
     private JFrame CreateView() {
         JFrame frame = new JFrame("Перевод температур");
-        frame.setSize(500, 150);
+        frame.setSize(500, 170);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -36,31 +45,42 @@ public class TemperaturesView {
 
     private JPanel CreatePanel() {
         JPanel panel = new JPanel();
-        JLabel label2 = new JLabel("Выберите единицы ввода");
+        JLabel label2 = new JLabel("Единицы ввода");
         JLabel label3 = new JLabel("Единицы вывода");
-        button.setText("Применить");
+        convertButton.setText("Применить");
         panel.add(label2);
-        panel.add(inputBox);
+        panel.add(inputUnits);
         panel.add(label3);
-        panel.add(outputBox);
-        panel.add(button);
+        panel.add(outputUnits);
+        panel.add(convertButton);
         return panel;
     }
 
-
-    public void getUI() {
+    public void createUI() {
         JFrame frame = CreateView();
-        frame.add(new JLabel("Введите температуру"));
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+        inputPanel.setBorder(new EmptyBorder(10, 10, 10,10));
+        JLabel userInputRequest = new JLabel("Температура");
+        inputPanel.add(userInputRequest);
         inputField.setMaximumSize(new Dimension(400, 50));
-        frame.add(inputField);
-        frame.add(CreatePanel());
-        frame.add(new JLabel("Результат"));
+        inputPanel.add(inputField);
+
+        inputField.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        inputPanel.add(CreatePanel());
+        JLabel result = new JLabel("Результат");
+        inputPanel.add(result);
+        userInputRequest.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        result.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+
+        frame.add(inputPanel);
         outputField.setMaximumSize(new Dimension(400, 50));
         frame.add(outputField);
+        outputField.setAlignmentX(JComponent.CENTER_ALIGNMENT);
     }
 
     public void addButtonListener(ActionListener listener) {
-        button.addActionListener(listener);
+        convertButton.addActionListener(listener);
     }
 
 
@@ -72,12 +92,12 @@ public class TemperaturesView {
         return inputField;
     }
 
-    public JComboBox getInputBox() {
-        return inputBox;
+    public JComboBox getInputUnits() {
+        return inputUnits;
     }
 
-    public JComboBox getOutputBox() {
-        return outputBox;
+    public JComboBox getOutputUnits() {
+        return outputUnits;
     }
 
 }
