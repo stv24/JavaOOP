@@ -33,7 +33,7 @@ public class TemperaturesView {
 
     private JFrame CreateView() {
         JFrame frame = new JFrame("Перевод температур");
-        frame.setSize(500, 170);
+        frame.setSize(440, 180);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -53,6 +53,7 @@ public class TemperaturesView {
         panel.add(label3);
         panel.add(outputUnits);
         panel.add(convertButton);
+        panel.setBorder(new EmptyBorder(2, 2, 2, 2));
         return panel;
     }
 
@@ -60,12 +61,11 @@ public class TemperaturesView {
         JFrame frame = CreateView();
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        inputPanel.setBorder(new EmptyBorder(10, 10, 10,10));
+        inputPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         JLabel userInputRequest = new JLabel("Температура");
         inputPanel.add(userInputRequest);
         inputField.setMaximumSize(new Dimension(400, 50));
         inputPanel.add(inputField);
-
         inputField.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         inputPanel.add(CreatePanel());
         JLabel result = new JLabel("Результат");
@@ -77,6 +77,7 @@ public class TemperaturesView {
         outputField.setMaximumSize(new Dimension(400, 50));
         frame.add(outputField);
         outputField.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        frame.add(Box.createRigidArea(new Dimension(0, 10)));
     }
 
     public void addButtonListener(ActionListener listener) {

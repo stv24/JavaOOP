@@ -41,12 +41,12 @@ public class TemperaturesControl {
         public void actionPerformed(ActionEvent e) {
             try {
                 String input = temperaturesView.getInputField().getText();
-                TemperaturesConverter inputConverter = scales.get(temperaturesView.getInputUnits().getSelectedItem());
-                double celsiusInput = inputConverter.convertInputValueToCelsius(Double.parseDouble(input));
-                TemperaturesConverter outputConverter = scales.get(temperaturesView.getOutputUnits().getSelectedItem());
-                double result = outputConverter.convertOutputValue(celsiusInput);
+                String inputUnit = (String) temperaturesView.getInputUnits().getSelectedItem();
+                String outputUnit = (String) temperaturesView.getOutputUnits().getSelectedItem();
+                TemperaturesConverter inputConverter = scales.get(inputUnit);
+                TemperaturesConverter outputConverter = scales.get(outputUnit);
+                double result = (new BindingConverter(inputConverter, outputConverter, Double.parseDouble(input))).getOutputValue();
                 temperaturesView.getOutputField().setText(String.valueOf(result));
-
             } catch (NumberFormatException e2) {
                 JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "неверный формат ввода");
             }
