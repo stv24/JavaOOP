@@ -10,9 +10,9 @@ public class Main {
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
-            TemperaturesView view = new TemperaturesView();
+            TemperaturesControl control = new TemperaturesControl();
+            TemperaturesView view = new TemperaturesView(control);
             view.createUI();
-            TemperaturesControl control = new TemperaturesControl(view);
             control.printScales();
         });
     }

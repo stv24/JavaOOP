@@ -1,8 +1,12 @@
 package ru.JavaOOP.stv.TemperaturesView;
 
+import ru.JavaOOP.stv.TemperaturesControl.TemperaturesControl;
+
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TemperaturesView {
@@ -11,9 +15,10 @@ public class TemperaturesView {
     private JComboBox<String> inputUnits;
     private JComboBox<String> outputUnits;
     private JButton convertButton;
+    private TemperaturesControl control;
 
 
-    public TemperaturesView() {
+    public TemperaturesView(TemperaturesControl control) {
         inputField = new JTextField(6);
         outputField = new JTextField(7);
         outputField.setText("");
@@ -21,15 +26,15 @@ public class TemperaturesView {
         inputUnits = new JComboBox<>();
         outputUnits = new JComboBox<>();
         convertButton = new JButton();
-    }
-
-    public void setScales(String[] scales) {
+        this.control = control;
+        convertButton.addActionListener(new ButtonListener());
+        String[] scales = this.control.getScales();
         for (String scale : scales) {
             inputUnits.addItem(scale);
             outputUnits.addItem(scale);
         }
-
     }
+
 
     private JFrame CreateView() {
         JFrame frame = new JFrame("Перевод температур");
@@ -80,25 +85,26 @@ public class TemperaturesView {
         frame.add(Box.createRigidArea(new Dimension(0, 10)));
     }
 
-    public void addButtonListener(ActionListener listener) {
-        convertButton.addActionListener(listener);
+
+    class ButtonListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                String input = inputField.getText();
+                String inputUnit = (String) inputUnits.getSelectedItem();
+                String outputUnit = (String) outputUnits.getSelectedItem();
+                double result = control.getResult(inputUnit, outputUnit, input);
+                getOutputField().setText(String.valueOf(result));
+
+            } catch (NumberFormatException e2) {
+                JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), "неверный формат ввода");
+            }
+        }
+
     }
 
-
-    public JTextField getOutputField() {
+    private JTextField getOutputField() {
         return outputField;
     }
 
-    public JTextField getInputField() {
-        return inputField;
-    }
-
-    public JComboBox getInputUnits() {
-        return inputUnits;
-    }
-
-    public JComboBox getOutputUnits() {
-        return outputUnits;
-    }
 
 }
