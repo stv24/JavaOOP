@@ -6,7 +6,7 @@ import ru.JavaOOP.stv.TemperaturesModel.*;
 import java.util.HashMap;
 
 public class TemperaturesControl {
-    private BindingConverter bindingConverter = new BindingConverter();
+    private BindingConverter bindingConverter;
 
     private HashMap<String, TemperaturesConverter> scales;
 
@@ -31,6 +31,7 @@ public class TemperaturesControl {
         scales.put("K", new KelvinConverter());
         scales.put("F", new FahrenheitConverter());
         scales.put("C", new CelsiusConverter());
+        bindingConverter = new BindingConverter();
     }
 
     public String[] getScales() {
