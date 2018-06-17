@@ -92,7 +92,7 @@ public class TemperaturesView {
                 String input = inputField.getText();
                 String inputUnit = (String) inputUnits.getSelectedItem();
                 String outputUnit = (String) outputUnits.getSelectedItem();
-                double result = control.getResult(inputUnit, outputUnit, input);
+                double result = control.getResult(inputUnit, outputUnit, Double.parseDouble(input));
                 getOutputField().setText(String.valueOf(result));
 
             } catch (NumberFormatException e2) {

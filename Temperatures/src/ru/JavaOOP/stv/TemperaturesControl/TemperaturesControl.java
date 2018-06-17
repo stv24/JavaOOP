@@ -6,6 +6,7 @@ import ru.JavaOOP.stv.TemperaturesModel.*;
 import java.util.HashMap;
 
 public class TemperaturesControl {
+    private BindingConverter bindingConverter = new BindingConverter();
 
     private HashMap<String, TemperaturesConverter> scales;
 
@@ -19,10 +20,10 @@ public class TemperaturesControl {
         scales.putIfAbsent(scaleName, temperatureClass);
     }
 
-    public double getResult(String inputUnit, String outputUnit, String input) {
+    public double getResult(String inputUnit, String outputUnit, double input) {
         TemperaturesConverter inputConverter = scales.get(inputUnit);
         TemperaturesConverter outputConverter = scales.get(outputUnit);
-        return (new BindingConverter()).getOutputValue(inputConverter, outputConverter, Double.parseDouble(input));
+        return bindingConverter.getOutputValue(inputConverter, outputConverter, input);
     }
 
     public TemperaturesControl() {
